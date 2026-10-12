@@ -50,7 +50,7 @@ function AuthPage() {
 
   const google = async () => {
     const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-    if (r.error) return toast.error("เข้าสู่ระบบด้วย Google ไม่สำเร็จ");
+    if (r.error) { toast.error("เข้าสู่ระบบด้วย Google ไม่สำเร็จ"); return; }
     if (r.redirected) return;
     nav({ to: "/wallet" });
   };
