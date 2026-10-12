@@ -53,8 +53,9 @@ function Row({ r, done }: { r: R; done: () => void }) {
     if (data) window.open(data.signedUrl, "_blank");
   };
   const act = async (approve: boolean) => {
-    const { error } = await supabase.rpc("review_topup", { _id: r.id, _approve: approve, _amount: approve ? Number(amt) : undefined });
-    if (error) return toast.error(error.message);
+    const args = approve ? { _id: r.id, _approve: true, _amount: Number(amt) } : { _id: r.id, _approve: false };
+    const { error } = await supabase.rpc("review_topup", args);
+    if (error) { toast.error(error.message); return; }
     toast.success(approve ? "อนุมัติแล้ว" : "ปฏิเสธแล้ว"); done();
   };
   return (
