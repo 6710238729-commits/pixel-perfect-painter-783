@@ -22,7 +22,7 @@ const SPEEDS = [0.5, 1, 1.25, 1.5, 2];
 
 function LearnPage() {
   const { course } = Route.useLoaderData();
-  const [active, setActive] = useState(course.lessons[0]);
+  const [active, setActive] = useState(course.lessons[0]!);
   const [speed, setSpeed] = useState(1);
   const [done, setDone] = useState<string[]>([]);
   const [saved, setSaved] = useState(false);
