@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Rules
+- Course/product catalog lives in src/lib/data.ts until Lovable Cloud tables replace it — single source for UI cards.
