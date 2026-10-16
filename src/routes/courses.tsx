@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { CourseCard } from "@/components/CourseCard";
-import { categories, courses } from "@/lib/data";
+import { categories } from "@/lib/data";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { catalogQuery } from "@/lib/catalog";
 
 export const Route = createFileRoute("/courses")({
   head: () => ({
@@ -13,10 +15,12 @@ export const Route = createFileRoute("/courses")({
       { property: "og:description", content: "คอร์ส After Effects ตั้งแต่ Beginner ถึง Advanced" },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(catalogQuery),
   component: CoursesPage,
 });
 
 function CoursesPage() {
+  const { data: courses } = useSuspenseQuery(catalogQuery);
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("All");
   const [type, setType] = useState<"all" | "free" | "premium">("all");
@@ -30,7 +34,7 @@ function CoursesPage() {
     if (sort === "lessons") l = [...l].sort((a, b) => b.lessons.length - a.lessons.length);
     if (sort === "az") l = [...l].sort((a, b) => a.title.localeCompare(b.title));
     return l;
-  }, [q, cat, type, sort]);
+  }, [courses, q, cat, type, sort]);
 
   return (
     <div className="mx-auto max-w-7xl px-5 pt-32">

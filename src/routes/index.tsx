@@ -2,7 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Sparkles } from "lucide-react";
 import hero from "@/assets/hero.jpg";
 import { CourseCard } from "@/components/CourseCard";
-import { courses, thumb } from "@/lib/data";
+import { thumb } from "@/lib/data";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { catalogQuery } from "@/lib/catalog";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -13,6 +15,7 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "คอร์ส Motion Graphics, VFX และเทคนิคเจาะลึก After Effects" },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(catalogQuery),
   component: Index,
 });
 
@@ -22,6 +25,7 @@ const cats = [
 ];
 
 function Index() {
+  const { data: courses } = useSuspenseQuery(catalogQuery);
   const free = courses.filter((c) => !c.premium);
   const premium = courses.filter((c) => c.premium);
   return (
