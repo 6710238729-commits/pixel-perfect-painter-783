@@ -14,6 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
+      courses: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          duration: string
+          hue: number
+          id: string
+          level: string
+          premium: boolean
+          sort: number
+          title: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string
+          duration?: string
+          hue?: number
+          id: string
+          level?: string
+          premium?: boolean
+          sort?: number
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          duration?: string
+          hue?: number
+          id?: string
+          level?: string
+          premium?: boolean
+          sort?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      lessons: {
+        Row: {
+          course_id: string
+          created_at: string
+          duration: string
+          free: boolean
+          id: string
+          position: number
+          title: string
+          video_url: string | null
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          duration?: string
+          free?: boolean
+          id?: string
+          position?: number
+          title: string
+          video_url?: string | null
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          duration?: string
+          free?: boolean
+          id?: string
+          position?: number
+          title?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lessons_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
