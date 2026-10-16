@@ -51,7 +51,7 @@ function ContentAdmin() {
   const addCourse = async () => {
     const id = `course-${Date.now().toString(36)}`;
     const { error } = await supabase.from("courses").insert({ id, title: "คอร์สใหม่", sort: data.courses.length, hue: 220 + ((data.courses.length * 37) % 100) });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("เพิ่มคอร์สแล้ว"); setOpen(id); refresh();
   };
 
@@ -79,18 +79,18 @@ function CourseEditor({ c, open, toggle, refresh }: { c: CatalogCourse; open: bo
 
   const save = async () => {
     const { error } = await supabase.from("courses").update(f).eq("id", c.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("บันทึกคอร์สแล้ว"); refresh();
   };
   const remove = async () => {
     if (!confirm(`ลบคอร์ส "${c.title}" และบทเรียนทั้งหมด?`)) return;
     const { error } = await supabase.from("courses").delete().eq("id", c.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("ลบคอร์สแล้ว"); refresh();
   };
   const addLesson = async () => {
     const { error } = await supabase.from("lessons").insert({ course_id: c.id, title: `บทที่ ${c.lessons.length + 1}`, position: c.lessons.length });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     refresh();
   };
 
@@ -161,14 +161,14 @@ function LessonRow({ l, courseId, prev, next, premium, refresh }: { l: DbLesson;
     if (!confirm(`ลบบทเรียน "${l.title}"?`)) return;
     if (l.video_url?.startsWith(STORAGE_PREFIX)) await supabase.storage.from("videos").remove([l.video_url.slice(STORAGE_PREFIX.length)]);
     const { error } = await supabase.from("lessons").delete().eq("id", l.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     refresh();
   };
   const upload = async (file: File) => {
     setBusy(true);
     const path = `${courseId}/${Date.now()}-${file.name.replace(/[^\w.-]/g, "_")}`;
     const { error } = await supabase.storage.from("videos").upload(path, file, { contentType: file.type });
-    if (error) { setBusy(false); return toast.error(error.message); }
+    if (error) { setBusy(false); { toast.error(error.message); return; } }
     if (l.video_url?.startsWith(STORAGE_PREFIX)) await supabase.storage.from("videos").remove([l.video_url.slice(STORAGE_PREFIX.length)]);
     const v = STORAGE_PREFIX + path;
     setUrl(v);
