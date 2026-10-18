@@ -34,7 +34,10 @@ function Admin() {
 
   return (
     <div className="mx-auto max-w-4xl px-5 pt-32">
-      <h1 className="text-4xl font-bold">รายการรออนุมัติ</h1>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <h1 className="text-4xl font-bold">รายการรออนุมัติ</h1>
+        <Link to="/admin/content" className="rounded-full border border-border px-4 py-2 text-sm hover:bg-secondary">จัดการคอร์ส</Link>
+      </div>
       <div className="mt-8 space-y-4">
         {data.rows.length === 0 && <div className="text-muted-foreground">ไม่มีรายการค้าง</div>}
         {data.rows.map((r) => <Row key={r.id} r={r} done={() => qc.invalidateQueries({ queryKey: ["admin-topups"] })} />)}
