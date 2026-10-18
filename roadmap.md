@@ -8,4 +8,4 @@
 - [ ] DB: courses, lessons, lesson_progress, bookmarks, products, purchases, entitlements
 - [ ] My Learning dashboard (continue watching, progress)
 - [ ] Server-side purchase with idempotency; signed video URLs for premium
-- [ ] Admin dashboard (content CRUD, uploads, packages, stats)
+- [x] Admin dashboard: content CRUD (/admin/content) + topup approvals (/admin); admin account admin6767@frameless.app created
