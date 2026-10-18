@@ -140,7 +140,7 @@ function CourseEditor({ c, open, toggle, refresh }: { c: CatalogCourse; open: bo
   );
 }
 
-function LessonRow({ l, courseId, prev, next, premium, refresh }: { l: DbLesson; courseId: string; prev?: DbLesson; next?: DbLesson; premium: boolean; refresh: () => void }) {
+function LessonRow({ l, courseId, prev, next, premium, refresh }: { l: DbLesson; courseId: string; prev: DbLesson | undefined; next: DbLesson | undefined; premium: boolean; refresh: () => void }) {
   const [title, setTitle] = useState(l.title);
   const [duration, setDuration] = useState(l.duration);
   const [url, setUrl] = useState(l.video_url ?? "");
