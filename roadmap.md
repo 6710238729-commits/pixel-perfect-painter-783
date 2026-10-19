@@ -1,6 +1,6 @@
 # FRAMELESS. Roadmap
 
-- [ ] Add and verify admin course-cover replacement on public course cards.
+- [x] Add and verify admin course-cover replacement on public course cards (upload, reload, removal).
 
 - [x] Fix course-management navigation and add a regression test preserving the authenticated layout.
 - [ ] Verify the course-management button with an authenticated admin account (blocked: no available admin session; user must sign in through the preview).
