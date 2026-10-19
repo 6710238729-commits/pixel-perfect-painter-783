@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { categories, thumb } from "@/lib/data";
 import { STORAGE_PREFIX, type CatalogCourse, type DbLesson } from "@/lib/catalog";
 
-export const Route = createFileRoute("/_authenticated/admin/content")({
+export const Route = createFileRoute("/_authenticated/admin_/content")({
   head: () => ({
     meta: [
       { title: "จัดการคอร์ส — FRAMELESS." },

@@ -1,5 +1,7 @@
 # FRAMELESS. Roadmap
 
+- [ ] Fix and verify the course-management button with an authenticated admin account.
+
 - [x] Phase 1: Design system + Home, Courses, Lesson player, Marketplace, 3D Profile cards
 - [x] Lovable Cloud: auth (email/password, Google, reset), profiles, roles (user/admin)
 - [x] Team page (3 members — waiting on real names/bios from user)
