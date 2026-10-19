@@ -2,7 +2,7 @@ export type Level = "Beginner" | "Intermediate" | "Advanced";
 export interface Lesson { id: string; title: string; duration: string; free?: boolean }
 export interface Course {
   id: string; title: string; category: string; level: Level; duration: string;
-  premium: boolean; hue: number; description: string; lessons: Lesson[];
+  premium: boolean; hue: number; description: string; lessons: Lesson[]; cover_path?: string | null;
 }
 
 const SAMPLE_VIDEO = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
