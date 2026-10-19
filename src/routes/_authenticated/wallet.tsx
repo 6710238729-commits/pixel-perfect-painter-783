@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/wallet")({
 });
 
 // Bank details for slip top-ups.
-const BANK = { bank: "ธนาคารออมสิน", name: "ธนภัทร มณีแสงสาคร", number: "164-1-70655-4" };
+const BANK = { bank: "ธนาคารกสิกรไทย", name: "ธนภัทร มณีแสงสาคร", number: "164-1-70655-4" };
 const input = "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring";
 const statusTh = { pending: "รอตรวจสอบ", approved: "อนุมัติแล้ว", rejected: "ถูกปฏิเสธ" } as Record<string, string>;
 
