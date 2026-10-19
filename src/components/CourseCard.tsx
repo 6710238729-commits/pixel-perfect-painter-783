@@ -1,13 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { Clock, Layers, Lock, Play } from "lucide-react";
 import { type Course, thumb } from "@/lib/data";
+import { CourseCover } from "@/components/CourseCover";
 
 export function CourseCard({ c }: { c: Course }) {
   return (
     <Link to="/learn/$courseId" params={{ courseId: c.id }}
       className="lift group block overflow-hidden rounded-2xl border border-border bg-card">
       <div className="relative aspect-video" style={{ background: thumb(c.hue) }}>
-        <div className="absolute inset-0 grid-bg opacity-30" />
+        {c.cover_path ? <CourseCover path={c.cover_path} title={c.title} /> : <div className="absolute inset-0 grid-bg opacity-30" />}
         <span className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-medium ${c.premium ? "bg-gradient-accent text-primary-foreground" : "glass"}`}>
           {c.premium ? "Premium" : "Free"}
         </span>

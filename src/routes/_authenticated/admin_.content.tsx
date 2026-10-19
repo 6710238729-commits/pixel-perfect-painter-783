@@ -1,11 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { ChevronDown, ChevronUp, Crown, Plus, Trash2, Upload, Video } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { categories, thumb } from "@/lib/data";
 import { STORAGE_PREFIX, type CatalogCourse, type DbLesson } from "@/lib/catalog";
+import { CourseCover } from "@/components/CourseCover";
+import { Button } from "@/components/ui/button";
+import { COURSE_COVER_BUCKET, courseCoverError } from "@/lib/course-cover";
 
 export const Route = createFileRoute("/_authenticated/admin_/content")({
   head: () => ({
@@ -29,7 +32,8 @@ function useAdminCatalog() {
     queryKey: ["admin-catalog"],
     queryFn: async () => {
       const { data: u } = await supabase.auth.getUser();
-      const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: u.user!.id, _role: "admin" });
+      if (!u.user) return { isAdmin: false, courses: [] as CatalogCourse[] };
+      const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: u.user.id, _role: "admin" });
       if (!isAdmin) return { isAdmin: false, courses: [] as CatalogCourse[] };
       const { data, error } = await supabase.from("courses").select("*, lessons(*)").order("sort").order("created_at");
       if (error) throw error;
@@ -76,6 +80,37 @@ function ContentAdmin() {
 function CourseEditor({ c, open, toggle, refresh }: { c: CatalogCourse; open: boolean; toggle: () => void; refresh: () => void }) {
   const [f, setF] = useState({ title: c.title, category: c.category, level: c.level, duration: c.duration, description: c.description, hue: c.hue, premium: c.premium });
   const set = <K extends keyof typeof f>(k: K, v: (typeof f)[K]) => setF((p) => ({ ...p, [k]: v }));
+  const [coverPath, setCoverPath] = useState(c.cover_path ?? null);
+  const [coverBusy, setCoverBusy] = useState(false);
+  const coverInput = useRef<HTMLInputElement>(null);
+
+  const changeCover = async (file?: File) => {
+    if (file) {
+      const message = courseCoverError(file);
+      if (message) { toast.error(message); return; }
+    }
+    setCoverBusy(true);
+    const oldPath = coverPath;
+    let newPath: string | null = null;
+    try {
+      if (file) {
+        newPath = `${c.id}/${crypto.randomUUID()}.${file.type.split("/")[1]}`;
+        const { error } = await supabase.storage.from(COURSE_COVER_BUCKET).upload(newPath, file, { contentType: file.type });
+        if (error) throw error;
+      }
+      const { error } = await supabase.from("courses").update({ cover_path: newPath }).eq("id", c.id);
+      if (error) {
+        if (newPath) await supabase.storage.from(COURSE_COVER_BUCKET).remove([newPath]);
+        throw error;
+      }
+      setCoverPath(newPath);
+      refresh();
+      if (oldPath) await supabase.storage.from(COURSE_COVER_BUCKET).remove([oldPath]);
+      toast.success(file ? "เปลี่ยนรูปปกแล้ว" : "นำรูปปกออกแล้ว");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "เปลี่ยนรูปปกไม่สำเร็จ กรุณาลองอีกครั้ง");
+    } finally { setCoverBusy(false); }
+  };
 
   const save = async () => {
     const { error } = await supabase.from("courses").update(f).eq("id", c.id);
@@ -97,7 +132,7 @@ function CourseEditor({ c, open, toggle, refresh }: { c: CatalogCourse; open: bo
   return (
     <div className="glass overflow-hidden rounded-2xl">
       <button onClick={toggle} className="flex w-full items-center gap-4 p-4 text-left">
-        <div className="h-12 w-16 shrink-0 rounded-lg" style={{ background: thumb(c.hue) }} />
+        <div className="relative h-12 w-16 shrink-0 overflow-hidden rounded-lg" style={{ background: thumb(c.hue) }}><CourseCover path={coverPath} title={c.title} /></div>
         <div className="flex-1">
           <div className="flex items-center gap-2 font-semibold">{c.title}{c.premium && <Crown className="h-4 w-4 text-cyan" />}</div>
           <div className="text-xs text-muted-foreground">{c.category} · {c.lessons.length} บทเรียน · {c.premium ? "Premium" : "Free"}</div>
@@ -106,6 +141,17 @@ function CourseEditor({ c, open, toggle, refresh }: { c: CatalogCourse; open: bo
       </button>
       {open && (
         <div className="space-y-5 border-t border-border p-5">
+          <div className="space-y-3">
+            <div className="text-sm font-medium">รูปปกคอร์ส</div>
+            <div className="relative aspect-video w-full max-w-sm overflow-hidden rounded-lg" style={{ background: thumb(f.hue) }}>
+              <CourseCover path={coverPath} title={f.title} />
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button variant="outline" disabled={coverBusy} onClick={() => coverInput.current?.click()}><Upload />{coverBusy ? "กำลังบันทึก…" : "เปลี่ยนรูปปก"}</Button>
+              {coverPath && <Button variant="ghost" disabled={coverBusy} onClick={() => changeCover()}><Trash2 />นำรูปออก</Button>}
+              <input ref={coverInput} type="file" accept="image/jpeg,image/png,image/webp" aria-label={`เลือกรูปปก ${c.title}`} hidden disabled={coverBusy} onChange={(e) => { const file = e.target.files?.[0]; if (file) void changeCover(file); e.target.value = ""; }} />
+            </div>
+          </div>
           <div className="grid gap-3 md:grid-cols-2">
             <label className="text-xs text-muted-foreground">ชื่อคอร์ส<input className={input} value={f.title} onChange={(e) => set("title", e.target.value)} /></label>
             <label className="text-xs text-muted-foreground">หมวดหมู่

@@ -12,3 +12,4 @@
 ## Rules
 - Course/product catalog lives in src/lib/data.ts until Lovable Cloud tables replace it — single source for UI cards.
 - Course management uses the un-nested admin_.content route under the authenticated layout so the approvals page cannot swallow its content; preserve the public /admin/content URL.
+- Course covers store object paths on courses and use the private course-covers bucket with public signed reads and admin-only writes; share CourseCover between editors and public cards.

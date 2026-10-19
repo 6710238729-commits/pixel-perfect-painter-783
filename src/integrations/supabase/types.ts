@@ -17,6 +17,7 @@ export type Database = {
       courses: {
         Row: {
           category: string
+          cover_path: string | null
           created_at: string
           description: string
           duration: string
@@ -29,6 +30,7 @@ export type Database = {
         }
         Insert: {
           category?: string
+          cover_path?: string | null
           created_at?: string
           description?: string
           duration?: string
@@ -41,6 +43,7 @@ export type Database = {
         }
         Update: {
           category?: string
+          cover_path?: string | null
           created_at?: string
           description?: string
           duration?: string
