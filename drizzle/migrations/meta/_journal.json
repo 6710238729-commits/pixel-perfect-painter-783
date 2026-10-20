@@ -29,6 +29,13 @@
       "when": 1792502207688,
       "tag": "0003_premium_prices_team_photos",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792502276615,
+      "tag": "0004_admin_member_profile_read",
+      "breakpoints": true
     }
   ]
 }
