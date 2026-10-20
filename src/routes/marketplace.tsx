@@ -12,6 +12,8 @@ export const Route = createFileRoute("/marketplace")({
       { name: "description", content: "ซื้อคลิปสอนเทคนิค After Effects เจาะลึกด้วยเครดิต" },
       { property: "og:title", content: "Marketplace — FRAMELESS." },
       { property: "og:description", content: "วิดีโอสอนเทคนิค After Effects ระดับ Premium" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Marketplace,

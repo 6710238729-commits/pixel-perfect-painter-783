@@ -10,6 +10,8 @@ export const Route = createFileRoute("/reset-password")({
       { name: "description", content: "ตั้งรหัสผ่านใหม่สำหรับบัญชี FRAMELESS." },
       { property: "og:title", content: "ตั้งรหัสผ่านใหม่ — FRAMELESS." },
       { property: "og:description", content: "ตั้งรหัสผ่านใหม่สำหรับบัญชี FRAMELESS." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Reset,

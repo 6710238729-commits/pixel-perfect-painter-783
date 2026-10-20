@@ -11,6 +11,8 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "สมัครสมาชิกหรือเข้าสู่ระบบ FRAMELESS." },
       { property: "og:title", content: "เข้าสู่ระบบ — FRAMELESS." },
       { property: "og:description", content: "สมัครสมาชิกหรือเข้าสู่ระบบ FRAMELESS." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AuthPage,

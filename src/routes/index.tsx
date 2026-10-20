@@ -13,6 +13,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Learn the Motion. Create the Impossible. คอร์สเรียน Adobe After Effects ฟรีและ Premium" },
       { property: "og:title", content: "FRAMELESS. — After Effects Learning Platform" },
       { property: "og:description", content: "คอร์ส Motion Graphics, VFX และเทคนิคเจาะลึก After Effects" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(catalogQuery),

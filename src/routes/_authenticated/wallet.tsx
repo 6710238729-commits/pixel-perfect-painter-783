@@ -14,6 +14,8 @@ export const Route = createFileRoute("/_authenticated/wallet")({
       { name: "description", content: "เติมเครดิตด้วยการโอนเงินหรือซองอั่งเปา TrueMoney" },
       { property: "og:title", content: "กระเป๋าเครดิต — FRAMELESS." },
       { property: "og:description", content: "เติมเครดิตด้วยการโอนเงินหรือซองอั่งเปา TrueMoney" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Wallet,

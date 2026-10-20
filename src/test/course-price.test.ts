@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { coursePriceLabel, parseCoursePrice } from "@/lib/course-price";
+import { coursePriceCredits, parseCoursePrice } from "@/lib/course-price";
 
 describe("Premium course prices", () => {
   it("saves the price entered by an admin as a whole baht amount", () => {
@@ -10,6 +10,6 @@ describe("Premium course prices", () => {
     expect(parseCoursePrice("")).toBeNull();
   });
   it("uses one credit for each baht in the saved Premium price", () => {
-    expect(coursePriceLabel({ premium: true, price: 250 })).toBe("250 บาท · 250 เครดิต");
+    expect(coursePriceCredits(250)).toBe(250);
   });
 });
