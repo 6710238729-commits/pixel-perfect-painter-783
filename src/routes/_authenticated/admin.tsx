@@ -3,6 +3,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { AdminMembers } from "@/components/AdminMembers";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -11,6 +13,8 @@ export const Route = createFileRoute("/_authenticated/admin")({
       { name: "description", content: "ตรวจสอบและอนุมัติการเติมเครดิต" },
       { property: "og:title", content: "แอดมิน — FRAMELESS." },
       { property: "og:description", content: "ตรวจสอบและอนุมัติการเติมเครดิต" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Admin,
@@ -22,7 +26,8 @@ function Admin() {
     queryKey: ["admin-topups"],
     queryFn: async () => {
       const { data: u } = await supabase.auth.getUser();
-      const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: u.user!.id, _role: "admin" });
+      if (!u.user) return { isAdmin: false, rows: [] };
+      const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: u.user.id, _role: "admin" });
       if (!isAdmin) return { isAdmin: false, rows: [] };
       const { data: rows } = await supabase.from("topup_requests").select("*").eq("status", "pending").order("created_at");
       return { isAdmin: true, rows: rows ?? [] };
@@ -36,12 +41,13 @@ function Admin() {
     <div className="mx-auto max-w-4xl px-5 pt-32">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <h1 className="text-4xl font-bold">รายการรออนุมัติ</h1>
-        <Link to="/admin/content" className="rounded-full border border-border px-4 py-2 text-sm hover:bg-secondary">จัดการคอร์ส</Link>
+        <Button variant="outline" asChild><Link to="/admin/content">จัดการคอร์สและรูปทีม</Link></Button>
       </div>
       <div className="mt-8 space-y-4">
         {data.rows.length === 0 && <div className="text-muted-foreground">ไม่มีรายการค้าง</div>}
         {data.rows.map((r) => <Row key={r.id} r={r} done={() => qc.invalidateQueries({ queryKey: ["admin-topups"] })} />)}
       </div>
+      <AdminMembers />
     </div>
   );
 }
