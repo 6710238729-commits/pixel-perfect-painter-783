@@ -1,5 +1,9 @@
 # FRAMELESS. Roadmap
 
+- [ ] Save Premium course prices and display them to students.
+- [ ] Show registered members and wallet balances to admins only.
+- [ ] Let admins replace Team photos and verify persistence.
+
 - [x] Add and verify admin course-cover replacement on public course cards (upload, reload, removal).
 
 - [x] Fix course-management navigation and add a regression test preserving the authenticated layout.

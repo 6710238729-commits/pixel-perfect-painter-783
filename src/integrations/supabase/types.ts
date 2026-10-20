@@ -25,6 +25,7 @@ export type Database = {
           id: string
           level: string
           premium: boolean
+          price: number
           sort: number
           title: string
         }
@@ -38,6 +39,7 @@ export type Database = {
           id: string
           level?: string
           premium?: boolean
+          price?: number
           sort?: number
           title: string
         }
@@ -51,6 +53,7 @@ export type Database = {
           id?: string
           level?: string
           premium?: boolean
+          price?: number
           sort?: number
           title?: string
         }
@@ -115,6 +118,21 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+        }
+        Relationships: []
+      }
+      team_photos: {
+        Row: {
+          id: string
+          photo_path: string | null
+        }
+        Insert: {
+          id: string
+          photo_path?: string | null
+        }
+        Update: {
+          id?: string
+          photo_path?: string | null
         }
         Relationships: []
       }
