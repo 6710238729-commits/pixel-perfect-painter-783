@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { team } from "@/lib/team";
 import { thumb } from "@/lib/data";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { CourseCover } from "@/components/CourseCover";
 
 export const Route = createFileRoute("/team")({
   head: () => ({
@@ -9,12 +12,19 @@ export const Route = createFileRoute("/team")({
       { name: "description", content: "พบกับทีมผู้สอน After Effects ทั้ง 3 คนของ FRAMELESS." },
       { property: "og:title", content: "ทีมของเรา — FRAMELESS." },
       { property: "og:description", content: "ทีมผู้สร้างและผู้สอนของ FRAMELESS." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: TeamPage,
 });
 
 function TeamPage() {
+  const { data: photos } = useQuery({ queryKey: ["team-photos"], queryFn: async () => {
+    const { data, error } = await supabase.from("team_photos").select("id, photo_path");
+    if (error) throw error;
+    return data;
+  } });
   return (
     <div className="mx-auto max-w-7xl px-5 pt-32">
       <h1 className="reveal text-4xl font-bold md:text-5xl">ทีมของเรา</h1>
@@ -23,6 +33,7 @@ function TeamPage() {
         {team.map((m, i) => (
           <article key={m.id} className="lift reveal overflow-hidden rounded-2xl border border-border bg-card" style={{ animationDelay: `${i * 90}ms` }}>
             <div className="relative aspect-[4/3]" style={{ background: thumb(m.hue) }}>
+              <CourseCover path={photos?.find((p) => p.id === m.id)?.photo_path ?? null} title={m.name} />
               <div className="absolute bottom-4 left-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-background/70 font-display text-2xl font-bold backdrop-blur">
                 {m.name.slice(-1)}
               </div>

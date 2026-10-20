@@ -9,6 +9,8 @@ export const Route = createFileRoute("/profile")({
       { name: "description", content: "คอลเลกชันการ์ด 3D ของคุณ — โปรไฟล์ สถิติการเรียน และความสำเร็จ" },
       { property: "og:title", content: "Profile — FRAMELESS." },
       { property: "og:description", content: "Interactive 3D card collection" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ProfilePage,

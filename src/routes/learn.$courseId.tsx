@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { sampleVideo } from "@/lib/data";
 import { catalogQuery, STORAGE_PREFIX, type DbLesson } from "@/lib/catalog";
 import { supabase } from "@/integrations/supabase/client";
+import { coursePriceLabel } from "@/lib/course-price";
 
 export const Route = createFileRoute("/learn/$courseId")({
   loader: async ({ params, context }) => {
@@ -15,7 +16,7 @@ export const Route = createFileRoute("/learn/$courseId")({
   head: ({ loaderData }) => {
     const t = loaderData ? `${loaderData.course.title} — FRAMELESS.` : "ไม่พบคอร์ส — FRAMELESS.";
     const d = loaderData?.course.description ?? "ไม่พบคอร์สนี้";
-    return { meta: [{ title: t }, { name: "description", content: d }, { property: "og:title", content: t }, { property: "og:description", content: d }] };
+    return { meta: [{ title: t }, { name: "description", content: d }, { property: "og:title", content: t }, { property: "og:description", content: d }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] };
   },
   notFoundComponent: () => <div className="pt-40 text-center">ไม่พบคอร์สนี้ <Link to="/courses" className="text-cyan">กลับไปหน้าคอร์ส</Link></div>,
   component: LearnPage,
@@ -43,6 +44,7 @@ function LearnPage() {
             <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
               <Lock className="h-10 w-10 text-cyan" />
               <p className="font-display text-lg">บทเรียน Premium</p>
+              <p className="font-semibold text-cyan">{coursePriceLabel(course)}</p>
               <p className="text-sm text-muted-foreground">ปลดล็อกด้วยเครดิตใน Marketplace</p>
               <Link to="/marketplace" className="bg-gradient-accent mt-2 rounded-full px-5 py-2 text-sm text-primary-foreground">ไปที่ Marketplace</Link>
             </div>
@@ -54,6 +56,7 @@ function LearnPage() {
           <div>
             <div className="text-xs uppercase tracking-widest text-cyan">{course.category}</div>
             <h1 className="mt-1 text-2xl font-bold">{course.title}{active ? ` · ${active.title}` : ""}</h1>
+            <p className="mt-2 text-sm font-semibold text-cyan">{coursePriceLabel(course)}</p>
           </div>
           <div className="flex items-center gap-2">
             <select value={speed} onChange={(e) => setSpeed(Number(e.target.value))} className="glass rounded-full px-3 py-2 text-sm outline-none" aria-label="ความเร็ว">

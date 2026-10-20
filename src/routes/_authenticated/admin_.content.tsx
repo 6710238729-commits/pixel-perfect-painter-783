@@ -9,6 +9,8 @@ import { STORAGE_PREFIX, type CatalogCourse, type DbLesson } from "@/lib/catalog
 import { CourseCover } from "@/components/CourseCover";
 import { Button } from "@/components/ui/button";
 import { COURSE_COVER_BUCKET, courseCoverError } from "@/lib/course-cover";
+import { parseCoursePrice, coursePriceLabel } from "@/lib/course-price";
+import { AdminTeamPhotos } from "@/components/AdminTeamPhotos";
 
 export const Route = createFileRoute("/_authenticated/admin_/content")({
   head: () => ({
@@ -73,6 +75,7 @@ function ContentAdmin() {
           <CourseEditor key={c.id} c={c} open={open === c.id} toggle={() => setOpen(open === c.id ? null : c.id)} refresh={refresh} />
         ))}
       </div>
+      <AdminTeamPhotos />
     </div>
   );
 }
@@ -81,6 +84,8 @@ function CourseEditor({ c, open, toggle, refresh }: { c: CatalogCourse; open: bo
   const [f, setF] = useState({ title: c.title, category: c.category, level: c.level, duration: c.duration, description: c.description, hue: c.hue, premium: c.premium });
   const set = <K extends keyof typeof f>(k: K, v: (typeof f)[K]) => setF((p) => ({ ...p, [k]: v }));
   const [coverPath, setCoverPath] = useState(c.cover_path ?? null);
+  const [price, setPrice] = useState(String(c.price ?? 0));
+  const [saving, setSaving] = useState(false);
   const [coverBusy, setCoverBusy] = useState(false);
   const coverInput = useRef<HTMLInputElement>(null);
 
@@ -113,7 +118,11 @@ function CourseEditor({ c, open, toggle, refresh }: { c: CatalogCourse; open: bo
   };
 
   const save = async () => {
-    const { error } = await supabase.from("courses").update(f).eq("id", c.id);
+    const amount = parseCoursePrice(price);
+    if (amount === null) { toast.error("ราคาต้องเป็นจำนวนเต็มตั้งแต่ 0 บาทขึ้นไป"); return; }
+    setSaving(true);
+    const { error } = await supabase.from("courses").update({ ...f, price: amount }).eq("id", c.id);
+    setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success("บันทึกคอร์สแล้ว"); refresh();
   };
@@ -135,7 +144,7 @@ function CourseEditor({ c, open, toggle, refresh }: { c: CatalogCourse; open: bo
         <div className="relative h-12 w-16 shrink-0 overflow-hidden rounded-lg" style={{ background: thumb(c.hue) }}><CourseCover path={coverPath} title={c.title} /></div>
         <div className="flex-1">
           <div className="flex items-center gap-2 font-semibold">{c.title}{c.premium && <Crown className="h-4 w-4 text-cyan" />}</div>
-          <div className="text-xs text-muted-foreground">{c.category} · {c.lessons.length} บทเรียน · {c.premium ? "Premium" : "Free"}</div>
+          <div className="text-xs text-muted-foreground">{c.category} · {c.lessons.length} บทเรียน · {c.premium ? "Premium" : "Free"} · {coursePriceLabel(c)}</div>
         </div>
         {open ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
       </button>
@@ -164,9 +173,10 @@ function CourseEditor({ c, open, toggle, refresh }: { c: CatalogCourse; open: bo
             <label className="text-xs text-muted-foreground md:col-span-2">คำอธิบาย<textarea rows={2} className={input} value={f.description} onChange={(e) => set("description", e.target.value)} /></label>
             <label className="text-xs text-muted-foreground">สีปก ({f.hue})<input type="range" min={0} max={360} value={f.hue} onChange={(e) => set("hue", Number(e.target.value))} className="w-full" /></label>
             <label className="flex items-center gap-2 self-end text-sm"><input type="checkbox" checked={f.premium} onChange={(e) => set("premium", e.target.checked)} /> คอร์ส Premium (บทเรียนที่ไม่ได้ติ๊ก "ฟรี" จะถูกล็อก)</label>
+             {f.premium && <label className="text-xs text-muted-foreground">ราคาคอร์ส Premium (บาท / เครดิต)<input type="number" min={0} step={1} className={input} value={price} onChange={(e) => setPrice(e.target.value)} /><span className="mt-1 block">1 บาท = 1 เครดิต</span></label>}
           </div>
           <div className="flex gap-2">
-            <button onClick={save} className="bg-gradient-accent rounded-full px-5 py-2 text-sm text-primary-foreground">บันทึกคอร์ส</button>
+            <Button onClick={save} disabled={saving}>{saving ? "กำลังบันทึก…" : "บันทึกคอร์ส"}</Button>
             <button onClick={remove} className="inline-flex items-center gap-1 rounded-full border border-destructive px-4 py-2 text-sm text-destructive"><Trash2 className="h-4 w-4" />ลบคอร์ส</button>
           </div>
 

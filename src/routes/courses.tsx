@@ -13,6 +13,8 @@ export const Route = createFileRoute("/courses")({
       { name: "description", content: "รวมคอร์ส After Effects ทุกหมวด ค้นหา กรอง และเรียงลำดับได้" },
       { property: "og:title", content: "Courses — FRAMELESS." },
       { property: "og:description", content: "คอร์ส After Effects ตั้งแต่ Beginner ถึง Advanced" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(catalogQuery),
