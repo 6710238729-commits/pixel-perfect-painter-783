@@ -33,7 +33,7 @@ function TeamPage() {
         {team.map((m, i) => (
           <article key={m.id} className="lift reveal overflow-hidden rounded-2xl border border-border bg-card" style={{ animationDelay: `${i * 90}ms` }}>
             <div className="relative aspect-[4/3]" style={{ background: thumb(m.hue) }}>
-              <CourseCover path={photos?.find((p) => p.id === m.id)?.photo_path} title={m.name} />
+              <CourseCover path={photos?.find((p) => p.id === m.id)?.photo_path ?? null} title={m.name} />
               <div className="absolute bottom-4 left-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-background/70 font-display text-2xl font-bold backdrop-blur">
                 {m.name.slice(-1)}
               </div>

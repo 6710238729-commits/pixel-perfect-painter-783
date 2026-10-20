@@ -1,13 +1,13 @@
 # FRAMELESS. Roadmap
 
-- [ ] Save Premium course prices and display them to students.
-- [ ] Show registered members and wallet balances to admins only.
-- [ ] Let admins replace Team photos and verify persistence.
+- [x] Save Premium course prices and display them to students (save, reload, public card verified).
+- [x] Show registered members and wallet balances to admins only (authenticated admin list verified).
+- [x] Let admins replace Team photos and verify persistence (upload, reload, public Team display, removal verified).
 
 - [x] Add and verify admin course-cover replacement on public course cards (upload, reload, removal).
 
 - [x] Fix course-management navigation and add a regression test preserving the authenticated layout.
-- [ ] Verify the course-management button with an authenticated admin account (blocked: no available admin session; user must sign in through the preview).
+- [x] Verify the course-management button with an authenticated admin account.
 
 - [x] Phase 1: Design system + Home, Courses, Lesson player, Marketplace, 3D Profile cards
 - [x] Lovable Cloud: auth (email/password, Google, reset), profiles, roles (user/admin)
