@@ -1,9 +1,11 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { Bookmark, CheckCircle2, Lock, PlayCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { sampleVideo } from "@/lib/data";
-import { catalogQuery, STORAGE_PREFIX, type DbLesson } from "@/lib/catalog";
-import { supabase } from "@/integrations/supabase/client";
+import { catalogQuery, type DbLesson } from "@/lib/catalog";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { fetchFreeVideo, fetchMemberVideo } from "@/lib/purchases.functions";
+import { PurchaseButton, usePurchaseState } from "@/components/PurchaseButton";
 import { coursePriceLabel } from "@/lib/course-price";
 
 export const Route = createFileRoute("/learn/$courseId")({
@@ -31,8 +33,11 @@ function LearnPage() {
   const [done, setDone] = useState<string[]>([]);
   const [saved, setSaved] = useState(false);
   const ref = useRef<HTMLVideoElement>(null);
-  const locked = course.premium && !active?.free;
-  const src = useVideoSrc(active);
+  const { data: account, user } = usePurchaseState();
+  const owned = Boolean(account?.isAdmin || account?.purchases.some((p) => p.course_id === course.id));
+  const locked = course.premium && !active?.free && !owned;
+  const { data: video, isLoading: videoLoading, error: videoError } = useVideoSrc(active, locked, Boolean(user));
+  const src = video?.src ?? undefined;
 
   useEffect(() => { if (ref.current) ref.current.playbackRate = speed; }, [speed, active, src]);
 
@@ -45,10 +50,9 @@ function LearnPage() {
               <Lock className="h-10 w-10 text-cyan" />
               <p className="font-display text-lg">บทเรียน Premium</p>
               <p className="font-semibold text-cyan">{coursePriceLabel(course)}</p>
-              <p className="text-sm text-muted-foreground">ปลดล็อกด้วยเครดิตใน Marketplace</p>
-              <Link to="/marketplace" className="bg-gradient-accent mt-2 rounded-full px-5 py-2 text-sm text-primary-foreground">ไปที่ Marketplace</Link>
+              <PurchaseButton courseId={course.id} title={course.title} price={course.price ?? 0} />
             </div>
-          ) : (
+          ) : videoLoading ? <div className="flex h-full items-center justify-center text-muted-foreground">กำลังโหลดวิดีโอ…</div> : videoError ? <div role="alert" className="flex h-full items-center justify-center text-destructive">โหลดวิดีโอไม่สำเร็จ กรุณาลองใหม่</div> : !src ? <div className="flex h-full items-center justify-center text-muted-foreground">ยังไม่มีวิดีโอในบทเรียนนี้</div> : (
             <video key={active?.id} ref={ref} src={src} controls className="h-full w-full" onEnded={() => setDone((d) => [...new Set([...d, active?.id ?? ""])])} />
           )}
         </div>
@@ -57,6 +61,7 @@ function LearnPage() {
             <div className="text-xs uppercase tracking-widest text-cyan">{course.category}</div>
             <h1 className="mt-1 text-2xl font-bold">{course.title}{active ? ` · ${active.title}` : ""}</h1>
             <p className="mt-2 text-sm font-semibold text-cyan">{coursePriceLabel(course)}</p>
+            {course.premium && <div className="mt-3"><PurchaseButton courseId={course.id} title={course.title} price={course.price ?? 0} /></div>}
           </div>
           <div className="flex items-center gap-2">
             <select value={speed} onChange={(e) => setSpeed(Number(e.target.value))} className="glass rounded-full px-3 py-2 text-sm outline-none" aria-label="ความเร็ว">
@@ -74,7 +79,7 @@ function LearnPage() {
         <div className="px-3 py-2 text-sm text-muted-foreground">{done.length}/{course.lessons.length} บทเรียนเสร็จแล้ว</div>
         <ul className="max-h-[60vh] space-y-1 overflow-auto">
           {course.lessons.map((l) => {
-            const lk = course.premium && !l.free;
+            const lk = course.premium && !l.free && !owned;
             return (
               <li key={l.id}>
                 <button onClick={() => setActive(l)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-colors ${active?.id === l.id ? "bg-secondary" : "hover:bg-secondary/60"}`}>
@@ -91,15 +96,10 @@ function LearnPage() {
   );
 }
 
-function useVideoSrc(l: DbLesson | undefined) {
-  const raw = l?.video_url || sampleVideo;
-  const [src, setSrc] = useState(raw.startsWith(STORAGE_PREFIX) ? "" : raw);
-  useEffect(() => {
-    if (!raw.startsWith(STORAGE_PREFIX)) { setSrc(raw); return; }
-    let on = true;
-    supabase.storage.from("videos").createSignedUrl(raw.slice(STORAGE_PREFIX.length), 3600)
-      .then(({ data }) => { if (on && data) setSrc(data.signedUrl); });
-    return () => { on = false; };
-  }, [raw]);
-  return src;
+function useVideoSrc(l: DbLesson | undefined, locked: boolean, signedIn: boolean) {
+  const free = useServerFn(fetchFreeVideo);
+  const member = useServerFn(fetchMemberVideo);
+  return useQuery({ queryKey: ["lesson-video", l?.id, signedIn, locked], enabled: Boolean(l) && !locked, staleTime: 240000,
+    queryFn: () => { if (!l) throw new Error("ไม่พบบทเรียน"); return (signedIn ? member : free)({ data: { lessonId: l.id } }); },
+  });
 }
