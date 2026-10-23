@@ -36,6 +36,13 @@
       "when": 1792502276615,
       "tag": "0004_admin_member_profile_read",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792747688296,
+      "tag": "0005_credit_purchases_and_secure_playback",
+      "breakpoints": true
     }
   ]
 }

@@ -59,6 +59,44 @@ export type Database = {
         }
         Relationships: []
       }
+      credit_adjustments: {
+        Row: {
+          admin_id: string
+          created_at: string
+          id: string
+          new_balance: number
+          note: string
+          previous_balance: number
+          user_id: string
+        }
+        Insert: {
+          admin_id: string
+          created_at?: string
+          id?: string
+          new_balance: number
+          note: string
+          previous_balance: number
+          user_id: string
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string
+          id?: string
+          new_balance?: number
+          note?: string
+          previous_balance?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_adjustments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lessons: {
         Row: {
           course_id: string
@@ -120,6 +158,45 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      purchases: {
+        Row: {
+          amount: number
+          course_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          course_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          course_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchases_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchases_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       team_photos: {
         Row: {
@@ -223,9 +300,18 @@ export type Database = {
         }
         Returns: boolean
       }
+      lesson_video: { Args: { _lesson_id: string }; Returns: string }
+      purchase_course: {
+        Args: { _course_id: string; _expected_price: number }
+        Returns: Json
+      }
       review_topup: {
         Args: { _amount?: number; _approve: boolean; _id: string }
         Returns: undefined
+      }
+      set_member_balance: {
+        Args: { _balance: number; _note: string; _user_id: string }
+        Returns: number
       }
     }
     Enums: {
