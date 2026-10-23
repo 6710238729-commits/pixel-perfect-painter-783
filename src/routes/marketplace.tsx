@@ -26,7 +26,7 @@ function Marketplace() {
   return <div className="mx-auto max-w-7xl px-5 pt-32 pb-16">
     <div className="flex flex-wrap items-end justify-between gap-4"><h1 className="text-4xl font-bold md:text-5xl">Marketplace</h1>{account && <span className="font-semibold text-cyan">{account.balance.toLocaleString("th-TH")} เครดิต</span>}</div>
     <p className="mt-3 text-muted-foreground">คอร์ส Premium</p>
-    <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{premium.map((c) => <article key={c.id} className="flex flex-col overflow-hidden rounded-lg border border-border bg-card"><CourseCard c={c} /><div className="mt-auto p-5"><PurchaseButton courseId={c.id} title={c.title} price={c.price ?? 0} /></div></article>)}</div>
+    <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{premium.map((c) => <div key={c.id} className="flex flex-col"><CourseCard c={c} /><div className="mt-3"><PurchaseButton courseId={c.id} title={c.title} price={c.price ?? 0} /></div></div>)}</div>
     {!premium.length && <p className="mt-10 text-muted-foreground">ยังไม่มีคอร์ส Premium</p>}
   </div>;
 }
