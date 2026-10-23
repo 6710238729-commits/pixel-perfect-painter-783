@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { COURSE_COVER_BUCKET, courseCoverError } from "@/lib/course-cover";
 import { parseCoursePrice, coursePriceLabel } from "@/lib/course-price";
 import { AdminTeamPhotos } from "@/components/AdminTeamPhotos";
+import { useServerFn } from "@tanstack/react-start";
+import { fetchAdminCatalog } from "@/lib/purchases.functions";
 
 export const Route = createFileRoute("/_authenticated/admin_/content")({
   head: () => ({
@@ -30,6 +32,7 @@ const LEVELS = ["Beginner", "Intermediate", "Advanced"];
 const input = "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary";
 
 function useAdminCatalog() {
+  const fetchCatalog = useServerFn(fetchAdminCatalog);
   return useQuery({
     queryKey: ["admin-catalog"],
     queryFn: async () => {
@@ -37,8 +40,7 @@ function useAdminCatalog() {
       if (!u.user) return { isAdmin: false, courses: [] as CatalogCourse[] };
       const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: u.user.id, _role: "admin" });
       if (!isAdmin) return { isAdmin: false, courses: [] as CatalogCourse[] };
-      const { data, error } = await supabase.from("courses").select("*, lessons(*)").order("sort").order("created_at");
-      if (error) throw error;
+      const data = await fetchCatalog();
       const courses = (data ?? []).map((c) => ({ ...c, lessons: [...c.lessons].sort((a, b) => a.position - b.position) })) as CatalogCourse[];
       return { isAdmin: true, courses };
     },
