@@ -20,11 +20,11 @@ export const fetchCatalog = createServerFn({ method: "GET" }).handler(async (): 
       },
     },
   });
-  const { data, error } = await sb.from("courses").select("*, lessons(*)").order("sort").order("created_at");
+  const { data, error } = await sb.from("courses").select("*, lessons(id,title,duration,free,position)").order("sort").order("created_at");
   if (error) throw new Error(error.message);
   return (data ?? []).map((c) => ({
     ...c, level: c.level as Level,
-    lessons: [...(c.lessons ?? [])].sort((a, b) => a.position - b.position),
+    lessons: [...(c.lessons ?? [])].map((l) => ({ ...l, video_url: null })).sort((a, b) => a.position - b.position),
   }));
 });
 

@@ -1,5 +1,9 @@
 # FRAMELESS. Roadmap
 
+- [ ] Enable admin member balance setting with an audit trail.
+- [ ] Enable atomic credit purchases, persistent ownership, and protected Premium playback.
+- [ ] Verify admin credit setting and purchase/readback end-to-end.
+
 - [x] Save Premium course prices and display them to students (save, reload, public card verified).
 - [x] Show registered members and wallet balances to admins only (authenticated admin list verified).
 - [x] Let admins replace Team photos and verify persistence (upload, reload, public Team display, removal verified).

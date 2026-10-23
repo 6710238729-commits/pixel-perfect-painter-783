@@ -4,6 +4,10 @@ import { useState } from "react";
 import { RefreshCw, Search, Users } from "lucide-react";
 import { fetchAdminMembers } from "@/lib/admin-members.functions";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { setMemberBalance } from "@/lib/purchases.functions";
+import { parseCoursePrice } from "@/lib/course-price";
 
 export function AdminMembers() {
   const fetchMembers = useServerFn(fetchAdminMembers);
@@ -18,8 +22,25 @@ export function AdminMembers() {
     <label className="mt-5 flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2"><Search className="h-4 w-4 text-muted-foreground" /><input value={search} onChange={(e) => setSearch(e.target.value)} aria-label="ค้นหาสมาชิก" placeholder="ค้นหาชื่อหรืออีเมล" className="min-w-0 flex-1 bg-transparent text-sm outline-none" /></label>
     {isLoading ? <p className="mt-5 text-muted-foreground">กำลังโหลดสมาชิก…</p> : error ? <p role="alert" className="mt-5 text-destructive">โหลดรายชื่อไม่สำเร็จ กรุณาลองใหม่</p> : <div className="mt-5 overflow-x-auto">
       <table className="w-full text-left text-sm"><thead className="border-b border-border text-muted-foreground"><tr><th className="py-3 pr-4">ชื่อ</th><th className="py-3 pr-4">อีเมล</th><th className="py-3 pr-4">วันที่สมัคร</th><th className="py-3 text-right">เครดิตคงเหลือ</th></tr></thead>
-        <tbody>{filtered.map((m) => <tr key={m.id} className="border-b border-border"><td className="py-4 pr-4">{m.name}</td><td className="py-4 pr-4">{m.email}</td><td className="whitespace-nowrap py-4 pr-4">{new Date(m.createdAt).toLocaleDateString("th-TH")}</td><td className="whitespace-nowrap py-4 text-right font-semibold text-cyan">{m.balance.toLocaleString("th-TH")} เครดิต</td></tr>)}</tbody>
-      </table>{!filtered.length && <p className="py-6 text-center text-muted-foreground">ไม่พบสมาชิก</p>}
+        <tbody>{filtered.map((m) => <tr key={m.id} className="border-b border-border"><td className="py-4 pr-4">{m.name}</td><td className="py-4 pr-4">{m.email}</td><td className="whitespace-nowrap py-4 pr-4">{new Date(m.createdAt).toLocaleDateString("th-TH")}</td><td className="py-4 text-right"><span className="font-semibold text-cyan">{m.balance.toLocaleString("th-TH")} เครดิต</span><CreditEditor key={`${m.id}-${m.balance}`} userId={m.id} balance={m.balance} /></td></tr>)}</tbody>
+       </table>{!filtered.length && <p className="py-6 text-center text-muted-foreground">ไม่พบสมาชิก</p>}
     </div>}
   </section>;
+}
+
+function CreditEditor({ userId, balance }: { userId: string; balance: number }) {
+  const [value, setValue] = useState(String(balance));
+  const [note, setNote] = useState("");
+  const [busy, setBusy] = useState(false);
+  const save = useServerFn(setMemberBalance);
+  const qc = useQueryClient();
+  const submit = async () => {
+    const amount = parseCoursePrice(value);
+    if (amount === null || !note.trim()) { toast.error("ระบุเครดิตจำนวนเต็มตั้งแต่ 0 และเหตุผล"); return; }
+    if (!window.confirm(`ตั้งยอดคงเหลือใหม่เป็น ${amount} เครดิต?`)) return;
+    setBusy(true);
+    try { await save({ data: { userId, balance: amount, note } }); await Promise.all([qc.invalidateQueries({ queryKey: ["admin-members"] }), qc.invalidateQueries({ queryKey: ["wallet"] }), qc.invalidateQueries({ queryKey: ["purchases"] })]); setNote(""); toast.success("บันทึกเครดิตแล้ว"); }
+    catch (e) { toast.error(e instanceof Error ? e.message : "บันทึกไม่สำเร็จ"); } finally { setBusy(false); }
+  };
+  return <div className="mt-2 flex flex-wrap justify-end gap-2"><input aria-label={`เครดิตใหม่ ${userId}`} type="number" min={0} step={1} value={value} onChange={(e) => setValue(e.target.value)} className="w-24 rounded-lg border border-border bg-background px-2 py-1" /><input aria-label={`เหตุผล ${userId}`} placeholder="เหตุผล" value={note} maxLength={300} onChange={(e) => setNote(e.target.value)} className="w-32 rounded-lg border border-border bg-background px-2 py-1" /><Button size="sm" disabled={busy} onClick={() => void submit()}>ตั้งเครดิต</Button></div>;
 }

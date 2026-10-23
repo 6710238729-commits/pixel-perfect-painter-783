@@ -16,3 +16,6 @@
 - Team photos store paths in team_photos and share the private course-covers bucket under team/ with CourseCover for signed display, keeping uploads admin-only.
 - Course prices persist on courses; course-price validates whole-baht amounts and formats the shared student display so edits appear consistently.
 - Registered member lists use a protected server function that verifies the caller's admin role before accessing Auth users; profile and wallet reads retain admin-scoped RLS.
+- Credit purchases and admin balance adjustments use authenticated, wallet-locking SQL RPCs with ownership and audit records so retries cannot double-charge and clients cannot choose prices.
+- Public catalogs expose lesson metadata without video URLs; playback resolves authorized lesson URLs through server functions, while video storage reads remain admin-only.
+- Marketplace sells the managed course catalog rather than unfulfilled sample products so every purchase unlocks real course ownership.
