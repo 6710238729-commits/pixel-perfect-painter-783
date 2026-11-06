@@ -1,5 +1,7 @@
 # FRAMELESS. Roadmap
 
+- [ ] Add admin course examples, student submissions with admin feedback, and website reviews; verify persistence and access.
+
 - [ ] Enable admin member balance setting with an audit trail.
 - [ ] Enable atomic credit purchases, persistent ownership, and protected Premium playback.
 - [ ] Verify admin credit setting and purchase/readback end-to-end.
