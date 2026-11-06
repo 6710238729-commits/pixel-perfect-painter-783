@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      course_examples: {
+        Row: {
+          course_id: string
+          created_at: string
+          description: string
+          id: string
+          media_path: string
+          media_type: string
+          title: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          description?: string
+          id?: string
+          media_path: string
+          media_type: string
+          title: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          description?: string
+          id?: string
+          media_path?: string
+          media_type?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_examples_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courses: {
         Row: {
           category: string
@@ -198,6 +236,41 @@ export type Database = {
           },
         ]
       }
+      site_reviews: {
+        Row: {
+          comment: string
+          created_at: string
+          display_name: string
+          id: string
+          rating: number
+          user_id: string
+        }
+        Insert: {
+          comment: string
+          created_at?: string
+          display_name: string
+          id?: string
+          rating: number
+          user_id: string
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          display_name?: string
+          id?: string
+          rating?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       team_photos: {
         Row: {
           id: string
@@ -287,6 +360,89 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      work_feedback: {
+        Row: {
+          admin_id: string
+          comment: string
+          status: string
+          submission_id: string
+          updated_at: string
+        }
+        Insert: {
+          admin_id: string
+          comment: string
+          status?: string
+          submission_id: string
+          updated_at?: string
+        }
+        Update: {
+          admin_id?: string
+          comment?: string
+          status?: string
+          submission_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_feedback_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: true
+            referencedRelation: "work_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      work_submissions: {
+        Row: {
+          course_id: string
+          created_at: string
+          description: string
+          id: string
+          media_path: string | null
+          media_type: string | null
+          title: string
+          user_id: string
+          work_url: string | null
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          description?: string
+          id?: string
+          media_path?: string | null
+          media_type?: string | null
+          title: string
+          user_id: string
+          work_url?: string | null
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          description?: string
+          id?: string
+          media_path?: string | null
+          media_type?: string | null
+          title?: string
+          user_id?: string
+          work_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_submissions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "work_submissions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

@@ -41,7 +41,7 @@ function Admin() {
     <div className="mx-auto max-w-4xl px-5 pt-32">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <h1 className="text-4xl font-bold">รายการรออนุมัติ</h1>
-        <Button variant="outline" asChild><Link to="/admin/content">จัดการคอร์สและรูปทีม</Link></Button>
+        <div className="flex flex-wrap gap-3"><Button variant="outline" asChild><Link to="/admin/content">จัดการคอร์สและรูปทีม</Link></Button><Button variant="outline" asChild><Link to="/admin/works">จัดการผลงานและตรวจงาน</Link></Button></div>
       </div>
       <div className="mt-8 space-y-4">
         {data.rows.length === 0 && <div className="text-muted-foreground">ไม่มีรายการค้าง</div>}

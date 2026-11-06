@@ -3,12 +3,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/use-session";
+import { Button } from "@/components/ui/button";
 
 const nav = [
   { to: "/", label: "Home" },
   { to: "/courses", label: "Courses" },
   { to: "/marketplace", label: "Marketplace" },
   { to: "/team", label: "Team" },
+  { to: "/showcase", label: "Showcase" },
+  { to: "/reviews", label: "Reviews" },
   { to: "/profile", label: "Profile" },
 ] as const;
 
@@ -30,7 +33,7 @@ export function Navbar() {
   const link = "rounded-full px-3 py-1.5 text-muted-foreground transition-colors hover:text-foreground";
   return (
     <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled ? "glass py-3" : "py-5"}`}>
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5">
         <Link to="/" className="font-display text-lg font-bold tracking-tight">
           FRAMELESS<span className="text-cyan">.</span>
         </Link>
@@ -44,7 +47,8 @@ export function Navbar() {
           {user ? (
             <>
               <Link to="/wallet" className={link} activeProps={{ className: "bg-secondary text-foreground" }}>Wallet</Link>
-              <button onClick={signOut} className={link}>ออกจากระบบ</button>
+              <Link to="/assignments" className={link} activeProps={{ className: "bg-secondary text-foreground" }}>My Works</Link>
+              <Button variant="ghost" onClick={signOut} className={link}>ออกจากระบบ</Button>
             </>
           ) : (
             <Link to="/auth" className="bg-gradient-accent ml-1 rounded-full px-4 py-1.5 text-primary-foreground">เข้าสู่ระบบ</Link>

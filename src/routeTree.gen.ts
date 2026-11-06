@@ -16,11 +16,15 @@ import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ReviewsRouteImport } from './routes/reviews'
+import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAssignmentsRouteImport } from './routes/_authenticated/assignments'
 import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated/wallet'
 import { Route as LearnCourseIdRouteImport } from './routes/learn.$courseId'
 import { Route as AuthenticatedAdminContentRouteImport } from './routes/_authenticated/admin_.content'
+import { Route as AuthenticatedAdminWorksRouteImport } from './routes/_authenticated/admin_.works'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -56,6 +60,16 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShowcaseRoute = ShowcaseRouteImport.update({
+  id: '/showcase',
+  path: '/showcase',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
   path: '/team',
@@ -66,6 +80,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAssignmentsRoute =
+  AuthenticatedAssignmentsRouteImport.update({
+    id: '/assignments',
+    path: '/assignments',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedWalletRoute = AuthenticatedWalletRouteImport.update({
   id: '/wallet',
   path: '/wallet',
@@ -82,6 +102,11 @@ const AuthenticatedAdminContentRoute =
     path: '/admin/content',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminWorksRoute = AuthenticatedAdminWorksRouteImport.update({
+  id: '/admin_/works',
+  path: '/admin/works',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -90,11 +115,15 @@ export interface FileRoutesByFullPath {
   '/marketplace': typeof MarketplaceRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/reviews': typeof ReviewsRoute
+  '/showcase': typeof ShowcaseRoute
   '/team': typeof TeamRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/assignments': typeof AuthenticatedAssignmentsRoute
   '/wallet': typeof AuthenticatedWalletRoute
   '/learn/$courseId': typeof LearnCourseIdRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
+  '/admin/works': typeof AuthenticatedAdminWorksRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -103,11 +132,15 @@ export interface FileRoutesByTo {
   '/marketplace': typeof MarketplaceRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/reviews': typeof ReviewsRoute
+  '/showcase': typeof ShowcaseRoute
   '/team': typeof TeamRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/assignments': typeof AuthenticatedAssignmentsRoute
   '/wallet': typeof AuthenticatedWalletRoute
   '/learn/$courseId': typeof LearnCourseIdRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
+  '/admin/works': typeof AuthenticatedAdminWorksRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -118,11 +151,15 @@ export interface FileRoutesById {
   '/marketplace': typeof MarketplaceRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/reviews': typeof ReviewsRoute
+  '/showcase': typeof ShowcaseRoute
   '/team': typeof TeamRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/assignments': typeof AuthenticatedAssignmentsRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
   '/learn/$courseId': typeof LearnCourseIdRoute
   '/_authenticated/admin_/content': typeof AuthenticatedAdminContentRoute
+  '/_authenticated/admin_/works': typeof AuthenticatedAdminWorksRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -133,11 +170,15 @@ export interface FileRouteTypes {
     | '/marketplace'
     | '/profile'
     | '/reset-password'
+    | '/reviews'
+    | '/showcase'
     | '/team'
     | '/admin'
+    | '/assignments'
     | '/wallet'
     | '/learn/$courseId'
     | '/admin/content'
+    | '/admin/works'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -146,11 +187,15 @@ export interface FileRouteTypes {
     | '/marketplace'
     | '/profile'
     | '/reset-password'
+    | '/reviews'
+    | '/showcase'
     | '/team'
     | '/admin'
+    | '/assignments'
     | '/wallet'
     | '/learn/$courseId'
     | '/admin/content'
+    | '/admin/works'
   id:
     | '__root__'
     | '/'
@@ -160,11 +205,15 @@ export interface FileRouteTypes {
     | '/marketplace'
     | '/profile'
     | '/reset-password'
+    | '/reviews'
+    | '/showcase'
     | '/team'
     | '/_authenticated/admin'
+    | '/_authenticated/assignments'
     | '/_authenticated/wallet'
     | '/learn/$courseId'
     | '/_authenticated/admin_/content'
+    | '/_authenticated/admin_/works'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -175,6 +224,8 @@ export interface RootRouteChildren {
   MarketplaceRoute: typeof MarketplaceRoute
   ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ReviewsRoute: typeof ReviewsRoute
+  ShowcaseRoute: typeof ShowcaseRoute
   TeamRoute: typeof TeamRoute
   LearnCourseIdRoute: typeof LearnCourseIdRoute
 }
@@ -230,6 +281,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reviews': {
+      id: '/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof ReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/showcase': {
+      id: '/showcase'
+      path: '/showcase'
+      fullPath: '/showcase'
+      preLoaderRoute: typeof ShowcaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/team': {
       id: '/team'
       path: '/team'
@@ -242,6 +307,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/assignments': {
+      id: '/_authenticated/assignments'
+      path: '/assignments'
+      fullPath: '/assignments'
+      preLoaderRoute: typeof AuthenticatedAssignmentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/wallet': {
@@ -265,19 +337,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminContentRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin_/works': {
+      id: '/_authenticated/admin_/works'
+      path: '/admin/works'
+      fullPath: '/admin/works'
+      preLoaderRoute: typeof AuthenticatedAdminWorksRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAssignmentsRoute: typeof AuthenticatedAssignmentsRoute
   AuthenticatedWalletRoute: typeof AuthenticatedWalletRoute
   AuthenticatedAdminContentRoute: typeof AuthenticatedAdminContentRoute
+  AuthenticatedAdminWorksRoute: typeof AuthenticatedAdminWorksRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAssignmentsRoute: AuthenticatedAssignmentsRoute,
   AuthenticatedWalletRoute: AuthenticatedWalletRoute,
   AuthenticatedAdminContentRoute: AuthenticatedAdminContentRoute,
+  AuthenticatedAdminWorksRoute: AuthenticatedAdminWorksRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -291,6 +374,8 @@ const rootRouteChildren: RootRouteChildren = {
   MarketplaceRoute: MarketplaceRoute,
   ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ReviewsRoute: ReviewsRoute,
+  ShowcaseRoute: ShowcaseRoute,
   TeamRoute: TeamRoute,
   LearnCourseIdRoute: LearnCourseIdRoute,
 }
