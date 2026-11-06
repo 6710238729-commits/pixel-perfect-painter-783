@@ -5,6 +5,8 @@ import { CourseCard } from "@/components/CourseCard";
 import { thumb } from "@/lib/data";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { catalogQuery } from "@/lib/catalog";
+import { communityQuery } from "@/lib/community.functions";
+import { ExampleGallery } from "@/components/ExampleGallery";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -17,7 +19,7 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(catalogQuery),
+  loader: ({ context }) => Promise.all([context.queryClient.ensureQueryData(catalogQuery), context.queryClient.ensureQueryData(communityQuery)]),
   component: Index,
 });
 
@@ -78,11 +80,7 @@ function Index() {
       </Section>
 
       <Section title="ผลงานจากเทคนิคที่สอน" kicker="Showcase">
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {[205, 290, 240, 190, 265, 220].map((h, i) => (
-            <div key={i} className={`lift rounded-2xl border border-border ${i === 0 ? "row-span-2" : "aspect-video"}`} style={{ background: thumb(h) }} />
-          ))}
-        </div>
+        <ExampleGallery />
       </Section>
     </>
   );
