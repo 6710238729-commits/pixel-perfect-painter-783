@@ -22,7 +22,7 @@ export function WorkForm({ userId, courses, example = false, done, initialCourse
       if (!file && (!work_url || example)) throw new Error("กรุณาเลือกไฟล์ผลงาน" + (example ? "" : "หรือใส่ลิงก์"));
       const media = file ? await uploadWork(file, userId) : null;
       path = media?.media_path;
-      const result = example ? await supabase.from("course_examples").insert({ ...parsed, media_path: media?.media_path ?? "", media_type: media?.media_type ?? "image" }) : await supabase.from("work_submissions").insert({ ...parsed, user_id: userId, work_url, media_path: media?.media_path, media_type: media?.media_type });
+      const result = example ? await supabase.from("course_examples").insert({ ...parsed, media_path: media?.media_path ?? "", media_type: media?.media_type ?? "image" }) : await supabase.from("work_submissions").insert({ ...parsed, user_id: userId, work_url, media_path: media?.media_path ?? null, media_type: media?.media_type ?? null });
       if (result.error) throw new Error("บันทึกผลงานไม่สำเร็จ กรุณาตรวจสิทธิ์คอร์สแล้วลองใหม่");
       path = undefined;
       setTitle(""); setDescription(""); setUrl(""); setFile(null); setReset((v) => v + 1);
