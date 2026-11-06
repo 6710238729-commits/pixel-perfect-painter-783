@@ -43,6 +43,13 @@
       "when": 1792747688296,
       "tag": "0005_credit_purchases_and_secure_playback",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793946916284,
+      "tag": "0006_learning_works_and_site_reviews",
+      "breakpoints": true
     }
   ]
 }
